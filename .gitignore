@@ -1,7 +1,17 @@
 
 *nc
+pic
+*.png
+*.npy
+*.csv
+*.txt
+sen_jobs*.yaml
+*.xlsx
+*.csv
+result/*/*yaml
 
 # Byte-compiled / optimized / DLL files
+*packaging
 __pycache__/
 *.py[cod]
 *$py.class
