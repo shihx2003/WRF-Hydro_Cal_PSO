@@ -149,6 +149,7 @@ def DrawStreamFlow(obs, sim, filename, **kwargs):
     plt.title(f'Flow Values Over Time-{mark}')
     plt.savefig(os.path.join(out_dir, f'{filename} {mark}.png'))
     print(f'Saved {filename} {mark}.png')
+    plt.close()
 
 if __name__ == '__main__':
     
