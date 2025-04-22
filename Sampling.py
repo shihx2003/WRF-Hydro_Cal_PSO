@@ -35,24 +35,17 @@ def read_params(path,params):
 
 def sample_params(problem, n, sample_file=None, Resample=False):
     """
-    n = N * (2D + 2)
     """
-    D = problem['num_vars']
-    if int(n) % (2 * (D + 2)) != 0:
-        raise ValueError(f"n = {n} is not a multiple of 2 * (D + 2)")
-    else:
-        N = n // (2 * (D + 2))
-        print(f"n = {n}, N = {N}")
-    
+
     if os.path.exists(sample_file) and not Resample:
         param_values = np.load(sample_file)
-        print(param_values.shape)
+        print("Not Resample : ", param_values.shape)
 
         return param_values
     else:
-        param_values = sobol_sample.sample(problem, N)
+        param_values = sobol_sample.sample(problem, n, seed=42)
         np.save(sample_file, param_values)
-        print(param_values.shape)
+        print("Resample : ", param_values.shape)
 
         return param_values
 
@@ -67,7 +60,7 @@ def generte_jobs(params, param_values, ymal_file=None):
         job_info = {
                 'job_id': f'Sen_{i+1}',
                 'period': 'Not Supported',
-                'event_no': 'Fuping_20190804',
+                'event_no': 'Fuping_20200824',
                 'basin' : 'Fuping',
                 'set_params': set_params
             }
@@ -75,13 +68,13 @@ def generte_jobs(params, param_values, ymal_file=None):
 
     if ymal_file is None:
         ymal_file = 'sen_jobs.yaml'
-    with open(ymal_file, 'w', encoding='utf-8') as f:
+    with open(f'./jobs/{ymal_file}', 'w', encoding='utf-8') as f:
         yaml.dump(jobs, f, default_flow_style=False, sort_keys=False)
 
     return jobs
 
 params = ['BEXP', 'ChSSlp', 'DKSAT',  'MannN', 'OVROUGHRTFAC', 'REFKDT', 'RETDEPRTFAC', 'SLOPE', 'SMCMAX', 'LKSATFAC','NEXP','RSURFEXP']
-params_path = r'F:\Haihe\Set\params_sen\params\run_params.yaml'
+params_path = '.\\params\\run_params.yaml'
 params_info = read_params(params_path, params)
 
 problem = {
@@ -90,10 +83,10 @@ problem = {
     'bounds': [[param['minValue'], param['maxValue']] for param in params_info.values()],
 }
 
-n_sample = 448
+n_sample = 16
 sample_file = "params_value.npy"
-params_value = sample_params(problem, n_sample, sample_file=sample_file, Resample=True)
-generte_jobs(params_info, params_value, ymal_file=None)
+params_value = sample_params(problem, n_sample, sample_file=sample_file, Resample=False)
+generte_jobs(params_info, params_value, ymal_file='sen_jobs_Fuping_20200824.yaml')
 
 
 df = pd.DataFrame(params_value, columns=list(params_info.keys()))
