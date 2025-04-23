@@ -13,7 +13,7 @@ import os
 import yaml
 import numpy as np
 import util.wrfhydrofrxst as whf
-from core import obj_fun
+from core import ObjFun
 import pandas as pd
 
 def read_obs(basin, events):
@@ -61,7 +61,7 @@ for job_id in job_ids:
     sim = sim[(sim['Date'] >= start_time) & (sim['Date'] <= end_time)]
     sim = sim.rename(columns={f'Fuping_{job_id}_Fuping_20190804': job_id})
 
-    kge = obj_fun.KGE(obs_values, sim)
+    kge = ObjFun.KGE(obs_values, sim)
     #whf.DrawStreamFlow(obs_values, sim, f'{round(kge[job_id], 3)}_{job_id}')
     job_kge.update(kge)
 

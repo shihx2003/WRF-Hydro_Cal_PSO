@@ -151,6 +151,7 @@ def DrawStreamFlow(obs, sim, filename, **kwargs):
     print(f'Saved {filename} {mark}.png')
     plt.close()
 
+
 if __name__ == '__main__':
     
     station = {'1':'Zijinguan',

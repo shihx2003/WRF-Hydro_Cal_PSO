@@ -14,7 +14,7 @@ import numpy as np
 import pandas as pd
 from util.read import read_params
 
-def generte_jobs(paramsnames, param_values, eventname, **kwargs):
+def jobs2yaml(paramsnames, param_values, eventname, **kwargs):
     params_path = kwargs.get('params_path', './params/run_params.yaml')
     jobname = kwargs.get('jobname', 'Run')
     basin, no = eventname.split('_')[0], eventname.split('_')[1]
@@ -43,7 +43,7 @@ def generte_jobs(paramsnames, param_values, eventname, **kwargs):
     return jobs
 
 
-def jobs2xlsx(yaml_path, xlsx_path, **kwargs):
+def jobs2xlsx(yaml_path, xlsx_path=None, **kwargs):
     with open(yaml_path, 'r', encoding='utf-8') as f:
         loaded_jobs = yaml.load(f, Loader=yaml.FullLoader)
 
@@ -54,6 +54,7 @@ def jobs2xlsx(yaml_path, xlsx_path, **kwargs):
         row.update(set_params)
         rows.append(row)
     params_values = pd.DataFrame(rows)
-    params_values.to_excel(xlsx_path, index=False)
+    if xlsx_path is not None:
+        params_values.to_excel(xlsx_path, index=False)
 
     return params_values

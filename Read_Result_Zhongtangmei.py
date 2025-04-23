@@ -14,7 +14,7 @@ import yaml
 import numpy as np
 import util.wrfhydrofrxst as whf
 from util.read import read_obs, read_jobs
-from core import obj_fun
+from core import ObjFun
 import pandas as pd
 
 station = {'1':'Zhongtangmei'}
@@ -37,11 +37,11 @@ for job_id in job_ids:
     sim = sim[(sim['Date'] >= obs_info[event_no][0]) & (sim['Date'] <= obs_info[event_no][1])]
     sim = sim.rename(columns={f'Zhongtangmei_{job_id}_Zhongtangmei_20190804': f'Zhongtangmei_Sen_20190804_{job_id}'})
 
-    pb = obj_fun.PBias(obs_events[event_no], sim)[f'Zhongtangmei_Sen_20190804_{job_id}']
-    cc = obj_fun.CC(obs_events[event_no], sim)[f'Zhongtangmei_Sen_20190804_{job_id}']
-    rmse = obj_fun.RMSE(obs_events[event_no], sim)[f'Zhongtangmei_Sen_20190804_{job_id}']
-    nse = obj_fun.NSE(obs_events[event_no], sim)[f'Zhongtangmei_Sen_20190804_{job_id}']
-    kge = obj_fun.KGE(obs_events[event_no], sim)[f'Zhongtangmei_Sen_20190804_{job_id}']
+    pb = ObjFun.PBias(obs_events[event_no], sim)[f'Zhongtangmei_Sen_20190804_{job_id}']
+    cc = ObjFun.CC(obs_events[event_no], sim)[f'Zhongtangmei_Sen_20190804_{job_id}']
+    rmse = ObjFun.RMSE(obs_events[event_no], sim)[f'Zhongtangmei_Sen_20190804_{job_id}']
+    nse = ObjFun.NSE(obs_events[event_no], sim)[f'Zhongtangmei_Sen_20190804_{job_id}']
+    kge = ObjFun.KGE(obs_events[event_no], sim)[f'Zhongtangmei_Sen_20190804_{job_id}']
     
     pb_values.append(pb)
     cc_values.append(cc)

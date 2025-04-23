@@ -9,6 +9,7 @@ sen_jobs*.yaml
 *.xlsx
 *.csv
 result/*/*yaml
+jobs/*
 
 # Byte-compiled / optimized / DLL files
 *packaging
