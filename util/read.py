@@ -34,7 +34,7 @@ def read_obs(basin, events):
 
     return obs_events, obs_info
 
-def read_params_values(path, params):
+def read_params_info(path, params):
     params_info = {}
     params_ymal = yaml.safe_load(open(path, 'r', encoding='utf-8'))
     for param in params:
@@ -52,7 +52,9 @@ def read_jobs_yaml(path):
     return jobs_id, jobs_yaml
 
 
-def read_jobs_frxst(dir, jobsyaml_path, return_obs=False):
+def read_jobs_frxst(dir, jobsyaml_path, **kwargs):
+    return_obs = kwargs.get('return_obs', False)
+    draw_pic = kwargs.get('draw_pic', False)
     job_ids, jobs_yaml = read_jobs_yaml(jobsyaml_path)
     eventname = jobs_yaml.get(job_ids[0]).get('event_no')
     basin, no = eventname.split('_')[0], eventname.split('_')[1]
@@ -69,6 +71,9 @@ def read_jobs_frxst(dir, jobsyaml_path, return_obs=False):
 
         sim = sim.rename(columns={f'{basin}_{frxst_name}': job_id})
         jobs_frxst[job_id] = sim
+
+        if draw_pic:
+            whf.DrawStreamFlow(obs_events[no], sim, f'{job_id}_{basin}_{no}')
 
     if return_obs:
         return jobs_frxst, obs_events[no], obs_info[no]

@@ -12,7 +12,7 @@ import os
 import sys
 import numpy as np
 import pandas as pd
-from util.read import read_jobs_frxst
+from util.read import read_jobs_frxst, read_params_info
 
 def Bias(obs, sim):
     obs = obs.reset_index(drop=True)
@@ -77,8 +77,9 @@ def KGE(obs, sim):
     return kge_values
 
 
-def MultObjFun(dir, jobsyaml_path, file_path=None):
-    jobs_frxst, obs, obs_info = read_jobs_frxst(dir, jobsyaml_path, return_obs=True)
+def CalObjFun(dir, jobsyaml_path, file_path=None, **kwargs):
+    draw_pic = kwargs.get('draw_pic', False)
+    jobs_frxst, obs, obs_info = read_jobs_frxst(dir, jobsyaml_path, return_obs=True, draw_pic=draw_pic)
     job_ids = list(jobs_frxst.keys())
 
     pb_values = []
@@ -107,3 +108,34 @@ def MultObjFun(dir, jobsyaml_path, file_path=None):
         obj_values.to_excel(file_path, index=False)
 
     return obj_values
+
+def MaxMinNorm(data, min_value, max_value):
+    """
+    """
+    norm_data = (data - min_value) / (max_value - min_value)
+    return norm_data
+
+def CalDistance(params, target, points, **kwargs):
+    params_yaml_path = kwargs.get('yaml_path', './params/run_params.yaml')
+    return_Norm = kwargs.get('return_Norm', False)
+    params_info = read_params_info(params_yaml_path, params)
+
+    target_Norm = {}
+    points_Norm = pd.DataFrame()
+    points_Norm['Job_id'] = points['Job_id']
+    for param in params:
+        minValue = params_info[param]['minValue']
+        maxValue = params_info[param]['maxValue']
+        target_Norm[param] = MaxMinNorm(target[param], minValue, maxValue)
+        points_Norm[param] = MaxMinNorm(points[param], minValue, maxValue)
+
+    target_Norm = np.array(list(target_Norm.values()))
+    points_values = points_Norm[params].values
+    norm_distance = np.sqrt(np.sum((points_values - target_Norm)**2, axis=1))
+    points_Norm['Norm_Distance'] = norm_distance
+    if return_Norm:
+        return points_Norm
+    else:
+        points_Norm = points_Norm.drop(columns=params)
+        return points_Norm
+
