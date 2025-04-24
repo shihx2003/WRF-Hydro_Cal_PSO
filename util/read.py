@@ -11,6 +11,7 @@
 import os
 import yaml
 import pandas as pd
+import util.wrfhydrofrxst as whf
 
 def read_obs(basin, events):
     info = pd.read_excel(f"F:\\水文年鉴\\Haihe_Floods_Interp_1H\\{basin}_FloodEvents\\{basin}_Flood_Info.xlsx", sheet_name='Sheet1')
@@ -33,7 +34,7 @@ def read_obs(basin, events):
 
     return obs_events, obs_info
 
-def read_params(path, params):
+def read_params_values(path, params):
     params_info = {}
     params_ymal = yaml.safe_load(open(path, 'r', encoding='utf-8'))
     for param in params:
@@ -44,10 +45,40 @@ def read_params(path, params):
     
     return params_info
 
-def read_jobs(path):
+def read_jobs_yaml(path):
     jobs_yaml = yaml.safe_load(open(path, 'r', encoding='utf-8'))
     jobs_id = list(jobs_yaml.keys())
 
     return jobs_id, jobs_yaml
 
-def 
+
+def read_jobs_frxst(dir, jobsyaml_path, return_obs=False):
+    job_ids, jobs_yaml = read_jobs_yaml(jobsyaml_path)
+    eventname = jobs_yaml.get(job_ids[0]).get('event_no')
+    basin, no = eventname.split('_')[0], eventname.split('_')[1]
+
+    obs_events, obs_info = read_obs(basin, no)
+
+    jobs_frxst = {}
+    for job_id in job_ids:
+        
+        frxst_name = f'{job_id}_{basin}_{no}'
+        sim = whf.Readfrxst_pts_out(os.path.join(dir, f'{frxst_name}.txt'), station = {'1': basin})
+        sim = whf.ConvertTimeZone(sim, 'UTC', 'Asia/Shanghai')
+        sim = sim[(sim['Date'] >= obs_info[no][0]) & (sim['Date'] <= obs_info[no][1])]
+
+        sim = sim.rename(columns={f'{basin}_{frxst_name}': job_id})
+        jobs_frxst[job_id] = sim
+
+    if return_obs:
+        return jobs_frxst, obs_events[no], obs_info[no]
+    else:
+        return jobs_frxst
+
+
+
+
+if __name__ == '__main__':
+    # Example usage
+    jobs_frxst = read_jobs_frxst('F:/Haihe/Run/params_sen/result/Fuping_Sen_20190804', 'F:/Haihe/Run/params_sen/jobs/sen_jobs_Fuping_20190804.yaml')
+    print(jobs_frxst)

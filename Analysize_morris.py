@@ -15,7 +15,7 @@ import os
 import seaborn as sns
 from SALib.sample import saltelli
 from util.read import read_params
-from util.visualSi import Draw_morris_mu, Draw_morris_sigma, Draw_morris_mu_star
+from util.visual import Draw_morris_mu, Draw_morris_sigma, Draw_morris_mu_star
 
 sen_path = "F:/Haihe/Run/params_sen/sen/Sen_data.xlsx"
 results = pd.read_excel(sen_path, sheet_name='Fuping_20190804')

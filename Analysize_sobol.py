@@ -15,7 +15,7 @@ import os
 import seaborn as sns
 from SALib.sample import saltelli
 from util.read import read_params
-from util.visualSi import Draw_sobol_S1_ST, Draw_sobol_S2
+from util.visual import Draw_sobol_S1_ST, Draw_sobol_S2
 import matplotlib.pyplot as plt
 
 sen_path = "F:/Haihe/Run/params_sen/sen/Sen_data.xlsx"

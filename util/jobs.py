@@ -12,14 +12,14 @@ import os
 import yaml
 import numpy as np
 import pandas as pd
-from util.read import read_params
+from util.read import read_params_values
 
 def jobs2yaml(paramsnames, param_values, eventname, **kwargs):
     params_path = kwargs.get('params_path', './params/run_params.yaml')
     jobname = kwargs.get('jobname', 'Run')
     basin, no = eventname.split('_')[0], eventname.split('_')[1]
     yaml_file = kwargs.get('yaml_file', f'{jobname}_{eventname}.yaml')
-    params_info = read_params(params_path, paramsnames)
+    params_info = read_params_values(params_path, paramsnames)
 
     jobs = {}
     for i in range(len(param_values)):

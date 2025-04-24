@@ -9,8 +9,10 @@
 
 # here put the import lib
 import os
+import sys
 import numpy as np
 import pandas as pd
+from util.read import read_jobs_frxst
 
 def Bias(obs, sim):
     obs = obs.reset_index(drop=True)
@@ -73,3 +75,35 @@ def KGE(obs, sim):
         kge_value = 1 - np.sqrt((r-1)**2 + (alpha-1)**2 + (beta-1)**2)
         kge_values[colums] = kge_value
     return kge_values
+
+
+def MultObjFun(dir, jobsyaml_path, file_path=None):
+    jobs_frxst, obs, obs_info = read_jobs_frxst(dir, jobsyaml_path, return_obs=True)
+    job_ids = list(jobs_frxst.keys())
+
+    pb_values = []
+    cc_values = []
+    rmse_values = []
+    nse_values = []
+    kge_values = []
+
+    for job_id in job_ids:
+        sim = jobs_frxst[job_id]
+
+        pb = PBias(obs, sim)[f'{job_id}']
+        cc = CC(obs, sim)[f'{job_id}']
+        rmse = RMSE(obs, sim)[f'{job_id}']
+        nse = NSE(obs, sim)[f'{job_id}']
+        kge = KGE(obs, sim)[f'{job_id}']
+        
+        pb_values.append(pb)
+        cc_values.append(cc)
+        rmse_values.append(rmse)
+        nse_values.append(nse)
+        kge_values.append(kge)
+
+    obj_values = pd.DataFrame({'Job_id': job_ids,  'PBias': pb_values, 'CC': cc_values, 'RMSE': rmse_values, 'NSE': nse_values, 'KGE': kge_values})
+    if file_path is not None:
+        obj_values.to_excel(file_path, index=False)
+
+    return obj_values

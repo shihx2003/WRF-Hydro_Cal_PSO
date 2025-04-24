@@ -10,7 +10,9 @@ sen_jobs*.yaml
 *.csv
 result/*/*yaml
 jobs/*
-
+*zip
+*.tar.gz
+*.tar*
 # Byte-compiled / optimized / DLL files
 *packaging
 __pycache__/
