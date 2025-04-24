@@ -103,7 +103,7 @@ def CalObjFun(dir, jobsyaml_path, file_path=None, **kwargs):
         nse_values.append(nse)
         kge_values.append(kge)
 
-    obj_values = pd.DataFrame({'Job_id': job_ids,  'PBias': pb_values, 'CC': cc_values, 'RMSE': rmse_values, 'NSE': nse_values, 'KGE': kge_values})
+    obj_values = pd.DataFrame({'job_id': job_ids,  'PBias': pb_values, 'CC': cc_values, 'RMSE': rmse_values, 'NSE': nse_values, 'KGE': kge_values})
     if file_path is not None:
         obj_values.to_excel(file_path, index=False)
 
@@ -122,7 +122,7 @@ def CalDistance(params, target, points, **kwargs):
 
     target_Norm = {}
     points_Norm = pd.DataFrame()
-    points_Norm['Job_id'] = points['Job_id']
+    points_Norm['job_id'] = points['job_id']
     for param in params:
         minValue = params_info[param]['minValue']
         maxValue = params_info[param]['maxValue']
