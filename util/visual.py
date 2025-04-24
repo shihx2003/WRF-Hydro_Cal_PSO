@@ -130,7 +130,7 @@ def Draw_morris_sigma(problem, Si, filename='morris_sigma', figsize=(12, 8)):
 from sklearn.metrics import mean_squared_error, r2_score
 
 def Draw_surr_ydyp(y_test, y_pred, filename, **kwargs):
-    figsize = kwargs.get('figsize', (10, 5))
+    figsize = kwargs.get('figsize', (10, 10))
 
     rmse = np.sqrt(mean_squared_error(y_test, y_pred))
     r2 = r2_score(y_test, y_pred)
@@ -147,5 +147,11 @@ def Draw_surr_ydyp(y_test, y_pred, filename, **kwargs):
 
     plt.grid(True)
     plt.tight_layout()
+    # Set uniform axis limits with a bit of padding
+    min_val = min(min(y_test), min(y_pred))
+    max_val = max(max(y_test), max(y_pred))
+    margin = (max_val - min_val) * 0.1  # 10% margin
+    plt.xlim(min_val - margin, max_val + margin)
+    plt.ylim(min_val - margin, max_val + margin)
     plt.savefig(f'./pic/{filename}.png', dpi=300)
     plt.close()
