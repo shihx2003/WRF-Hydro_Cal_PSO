@@ -35,3 +35,22 @@ def cp_Fuping_20160718(jobs_yaml_path, resut_dir):
         else:
             print(f"File not found: {original_path}")
 
+
+def cp_yaml(jobs_yaml_path, resut_dir='/jobs'):
+    """
+    jobs_yaml_path = f'./jobs/sen2central_Fuping_20160718.yaml'
+    resut_dir = f'./result/Fuping_central_sample'
+    """
+    # Parse the original file name
+    original_yaml_name = os.path.basename(jobs_yaml_path)
+
+    new_yaml_name = original_yaml_name.replace('20160718', '20160724')
+    new_yaml_path = os.path.join(resut_dir, new_yaml_name)
+    with open(jobs_yaml_path, 'r') as file:
+        content = file.read()
+    modified_content = content.replace('20160718', '20160724')
+    with open(new_yaml_path, 'w') as file:
+        file.write(modified_content)
+    
+    print(f"Created modified YAML file: {new_yaml_path}")
+
