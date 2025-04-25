@@ -50,7 +50,7 @@ def jobs2xlsx(yaml_path, xlsx_path=None, **kwargs):
     rows = []
     for sen_id, sen_data in loaded_jobs.items():
         set_params = sen_data['set_params']
-        row = {'Job_id': sen_id}
+        row = {'job_id': sen_id}
         row.update(set_params)
         rows.append(row)
     params_values = pd.DataFrame(rows)

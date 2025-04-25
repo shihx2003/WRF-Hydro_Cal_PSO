@@ -13,6 +13,7 @@ import sys
 import numpy as np
 import pandas as pd
 from util.read import read_jobs_frxst, read_params_info
+from util.jobs import jobs2xlsx
 
 def Bias(obs, sim):
     obs = obs.reset_index(drop=True)
@@ -139,3 +140,16 @@ def CalDistance(params, target, points, **kwargs):
         points_Norm = points_Norm.drop(columns=params)
         return points_Norm
 
+if __name__ == '__main__':
+    jobyaml = './jobs/surr_PBias_Fuping_20120721.yaml'
+    frxst_dir = './result/Fuping_surr_PBias'
+
+    params_values = jobs2xlsx(jobyaml)
+    obj_values = CalObjFun(frxst_dir, jobyaml)
+    params = params_values.columns[1:].tolist()
+    target = params_values[(params_values['Job_id'] == 'surr_PBias_Fuping_20120721_114')].to_dict(orient='records')[0]
+
+    Distance = CalDistance(params, target, params_values)
+    obj_values['Distance'] = Distance['Norm_Distance']
+    obj_values[params] = params_values[params]
+    obj_values.to_excel('./surr/Fuping_PBias_20120721D.xlsx', index=False)
