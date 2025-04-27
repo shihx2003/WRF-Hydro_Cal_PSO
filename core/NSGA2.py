@@ -46,7 +46,7 @@ class NSGA2Runner:
         # 设置终止条件（基于最大代数）
         self.termination = get_termination("n_gen", n_gen)
 
-    def run(self, verbose=False, save_results=True, output_dir="results"):
+    def run(self, verbose=False, save_results=False, output_dir="results"):
         """
         运行优化过程
         :param verbose: 是否打印优化过程 (默认: False)
