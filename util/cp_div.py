@@ -13,7 +13,7 @@ from util.read import read_jobs_yaml
 import os
 import shutil
 
-def cp_Fuping_20160718(jobs_yaml_path, resut_dir):
+def cp_Fuping_20160718(jobs_yaml_path, eventname, source, trarget, resut_dir):
     """
     jobs_yaml_path = f'./jobs/sen2central_Fuping_20160718.yaml'
     resut_dir = f'./result/Fuping_central_sample'
@@ -21,8 +21,8 @@ def cp_Fuping_20160718(jobs_yaml_path, resut_dir):
 
     jobs_ids, _ = read_jobs_yaml(jobs_yaml_path)
     for i in range(len(jobs_ids)):
-        origin_name = f'{jobs_ids[i]}_Fuping_20160718.txt'
-        new_name = origin_name.replace('20160718', '20160724')
+        origin_name = f'{jobs_ids[i]}_{eventname}.txt'
+        new_name = origin_name.replace(source, trarget)
         original_path = f'./{resut_dir}/{origin_name}'
         new_path = f'./{resut_dir}/{new_name}'
             
@@ -36,7 +36,7 @@ def cp_Fuping_20160718(jobs_yaml_path, resut_dir):
             print(f"File not found: {original_path}")
 
 
-def cp_yaml(jobs_yaml_path, resut_dir='/jobs'):
+def cp_yaml(jobs_yaml_path, source, trarget, resut_dir='/jobs'):
     """
     jobs_yaml_path = f'./jobs/sen2central_Fuping_20160718.yaml'
     resut_dir = f'./result/Fuping_central_sample'
@@ -44,11 +44,11 @@ def cp_yaml(jobs_yaml_path, resut_dir='/jobs'):
     # Parse the original file name
     original_yaml_name = os.path.basename(jobs_yaml_path)
 
-    new_yaml_name = original_yaml_name.replace('20160718', '20160724')
+    new_yaml_name = original_yaml_name.replace(source, trarget)
     new_yaml_path = os.path.join(resut_dir, new_yaml_name)
     with open(jobs_yaml_path, 'r') as file:
         content = file.read()
-    modified_content = content.replace('20160718', '20160724')
+    modified_content = content.replace(source, trarget)
     with open(new_yaml_path, 'w') as file:
         file.write(modified_content)
     

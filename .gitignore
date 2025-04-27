@@ -13,6 +13,12 @@ jobs/*
 *zip
 *.tar.gz
 *.tar*
+*test*
+test.py
+/delete
+
+# model files
+*.pkl
 # Byte-compiled / optimized / DLL files
 *packaging
 __pycache__/
