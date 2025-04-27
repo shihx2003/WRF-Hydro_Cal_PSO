@@ -30,7 +30,7 @@ from sklearn.multioutput import MultiOutputRegressor
 
 
 
-
+models = ['LR', 'Ridge', 'Lasso', 'ElasticNet', 'BayesianRidge', 'Huber', 'KNN', 'DT', 'RF', 'GB', 'AdaBoost', 'MLP', 'SVR', 'GP']
 def SurrModel(model, multi=False, random_state=42):
     if model == 'LR':
         base_model = LinearRegression()
