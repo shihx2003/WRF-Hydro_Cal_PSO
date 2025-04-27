@@ -13,7 +13,7 @@ from util.read import read_jobs_yaml
 import os
 import shutil
 
-def cp_Fuping_20160718(jobs_yaml_path, eventname, source, trarget, resut_dir):
+def cp_frxst(jobs_yaml_path, eventname, source, trarget, resut_dir):
     """
     jobs_yaml_path = f'./jobs/sen2central_Fuping_20160718.yaml'
     resut_dir = f'./result/Fuping_central_sample'
@@ -36,7 +36,7 @@ def cp_Fuping_20160718(jobs_yaml_path, eventname, source, trarget, resut_dir):
             print(f"File not found: {original_path}")
 
 
-def cp_yaml(jobs_yaml_path, source, trarget, resut_dir='/jobs'):
+def cp_yaml(jobs_yaml_path, source, trarget, resut_dir='./jobs'):
     """
     jobs_yaml_path = f'./jobs/sen2central_Fuping_20160718.yaml'
     resut_dir = f'./result/Fuping_central_sample'
