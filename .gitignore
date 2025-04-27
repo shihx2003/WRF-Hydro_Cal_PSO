@@ -16,6 +16,7 @@ jobs/*
 *test*
 test.py
 /delete
+work
 
 # model files
 *.pkl
