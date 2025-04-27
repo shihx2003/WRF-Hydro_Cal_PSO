@@ -13,8 +13,8 @@ import yaml
 import pandas as pd
 import util.wrfhydrofrxst as whf
 
-def read_obs(basin, events):
-    info = pd.read_excel(f"F:\\水文年鉴\\Haihe_Floods_Interp_1H\\{basin}_FloodEvents\\{basin}_Flood_Info.xlsx", sheet_name='Sheet1')
+def read_obs(basin, events, obsdir='/public/home/Shihuaixuan/Data/Qobs'):
+    info = pd.read_excel(f"{obsdir}/Haihe_Floods_Interp_1H/{basin}_FloodEvents/{basin}_Flood_Info.xlsx", sheet_name='Sheet1')
     obs_events = {}
     obs_info = {}
     if not isinstance(events, list):
@@ -25,7 +25,7 @@ def read_obs(basin, events):
         flood_info = info[info['No'] == enent_no]
         start_time = flood_info.iloc[0]['start_date']
         end_time = flood_info.iloc[0]['end_date']
-        obs = pd.read_excel(f"F:\\水文年鉴\\Haihe_Floods_Interp_1H\\{basin}_FloodEvents\\{basin}_{enent_no}.xlsx", sheet_name='Sheet1')
+        obs = pd.read_excel(f"{obsdir}/Haihe_Floods_Interp_1H/{basin}_FloodEvents/{basin}_{enent_no}.xlsx", sheet_name='Sheet1')
         obs = obs.rename(columns={'Q': 'obs'})
         obs['Date'] = pd.to_datetime(obs['Date'])
         
