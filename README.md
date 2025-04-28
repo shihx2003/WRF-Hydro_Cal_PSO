@@ -9,5 +9,7 @@ Fuping_events_no = ['20120621', '20120721', '20130811', '20160718', '20190804', 
 
 ```python
 Zhongtangmei_events_no = ['20080809', '20110724', '20110825', '20120721', '20160719', '20180707', '20190722', '20190804', '20200718', '20200823']
+params = ['BEXP', 'ChSSlp', 'DKSAT',  'MannN', 'OVROUGHRTFAC', 'REFKDT', 'RETDEPRTFAC', 'SLOPE', 'SMCMAX', 'LKSATFAC','NEXP','RSURFEXP']
+objfun_name = ['Bias', 'PBias', 'RMSE', 'CC', 'NSE', 'KGE']
 ```
 

@@ -10,6 +10,7 @@
 # here put the import lib
 from hmac import new
 import os
+import re
 import sys
 import yaml
 import random
@@ -28,17 +29,17 @@ random.seed(42)
 
 def creat_problem(params, **kwargs):
 
-    params_path = kwargs.get('params_path', '.\\params\\run_params.yaml')
+    params_path = kwargs.get('params_path', './params/run_params.yaml')
     params_info = read_params_info(params_path, params)
     problem = {
         'num_vars': len(params_info),
-        'names': list(params_info.keys()),
+        'names': np.array(list(params_info.keys())),
         'bounds': [[param['minValue'], param['maxValue']] for param in params_info.values()],
     }
 
     return problem
 
-def sample_params(problem, n, sample_file=None,**kwargs):
+def sample_params(problem, n, sample_file=None, **kwargs):
     Resample = kwargs.get('Resample', False)
     savenpy = kwargs.get('savenpy', False)
     seed = kwargs.get('seed', 42)
@@ -56,12 +57,10 @@ def sample_params(problem, n, sample_file=None,**kwargs):
 
         return param_values
 
-def central_sample(params, central_point, n, precent_range=0.1, sample_method='latin', **kwargs):
+def central_problem(params, central_point, n, precent_range=0.1, **kwargs):
 
-    seed = kwargs.get('seed', 42)
-    sample_file = kwargs.get('filename', None)
     problem = creat_problem(params)
-    print(problem)
+    print('default problem : ', problem)
     for i in range(len(problem['bounds'])):
         param_name = problem['names'][i]
         maxValue = problem['bounds'][i][1]
@@ -69,6 +68,14 @@ def central_sample(params, central_point, n, precent_range=0.1, sample_method='l
         range_len = (problem['bounds'][i][1] - problem['bounds'][i][0]) * precent_range
         problem['bounds'][i][0] = round(max(minValue, central_point[param_name] - range_len), 4)
         problem['bounds'][i][1] = round(min(maxValue, central_point[param_name] + range_len), 4)
+    print('new problem : ', problem)
+    return problem
+
+def central_sample(params, central_point, n, precent_range=0.1, sample_method='latin', **kwargs):
+
+    seed = kwargs.get('seed', 42)
+    sample_file = kwargs.get('filename', None)
+    problem = central_problem(params, central_point, n, precent_range)
     print(problem)
     if sample_method == 'latin':
         param_values = latin.sample(problem, n, seed=seed)

@@ -9,6 +9,7 @@
 
 # here put the import lib
 import os
+import re
 import sys
 import numpy as np
 import pandas as pd
@@ -78,11 +79,41 @@ def KGE(obs, sim):
     return kge_values
 
 
-def CalObjFun(dir, jobsyaml_path, file_path=None, **kwargs):
+def CalObjFun(dir, jobsyaml_path, save_path=None, **kwargs):
+    """
+    Calculate the objective function values for the given simulation results.
+
+    Parameters
+    ----------
+    dir : str
+        The directory where the simulation results are stored.
+    jobsyaml_path : str
+        The path to the YAML file containing job information.
+    save_path : str, optional
+        The path to save the results. If None, the results will not be saved.
+    **kwargs : keyword arguments
+        Additional parameters for the function:
+        - draw_pic : bool, optional
+            If True, draw pictures of the simulation results. Default is False.
+        - obsdir : str, optional
+            The directory where the observed data is stored. Default is '/public/home/Shihuaixuan/Data/Qobs'.
+        - return_params : bool, optional
+            If True, return the parameters along with the objective function values. Default is False.
+
+    Returns
+    ----------
+    return_fun : pd.DataFrame
+        A DataFrame containing the objective function values for each job ID. If return_params is True, it will also include the parameters.
+    """
+
     draw_pic = kwargs.get('draw_pic', False)
-    jobs_frxst, obs, obs_info = read_jobs_frxst(dir, jobsyaml_path, return_obs=True, draw_pic=draw_pic)
+    obsdir = kwargs.get('obsdir', '/public/home/Shihuaixuan/Data/Qobs')
+    return_params = kwargs.get('return_params', False)
+
+    jobs_frxst, obs, obs_info = read_jobs_frxst(dir, jobsyaml_path, obsdir=obsdir, return_obs=True, draw_pic=draw_pic)
     job_ids = list(jobs_frxst.keys())
 
+    bias_values = []
     pb_values = []
     cc_values = []
     rmse_values = []
@@ -92,23 +123,34 @@ def CalObjFun(dir, jobsyaml_path, file_path=None, **kwargs):
     for job_id in job_ids:
         sim = jobs_frxst[job_id]
 
+        bias = Bias(obs, sim)[f'{job_id}']
         pb = PBias(obs, sim)[f'{job_id}']
         cc = CC(obs, sim)[f'{job_id}']
         rmse = RMSE(obs, sim)[f'{job_id}']
         nse = NSE(obs, sim)[f'{job_id}']
         kge = KGE(obs, sim)[f'{job_id}']
         
+        bias_values.append(bias)
         pb_values.append(pb)
         cc_values.append(cc)
         rmse_values.append(rmse)
         nse_values.append(nse)
         kge_values.append(kge)
 
-    obj_values = pd.DataFrame({'job_id': job_ids,  'PBias': pb_values, 'CC': cc_values, 'RMSE': rmse_values, 'NSE': nse_values, 'KGE': kge_values})
-    if file_path is not None:
-        obj_values.to_excel(file_path, index=False)
+    obj_values = pd.DataFrame({'job_id': job_ids, 'Bias': bias_values,  'PBias': pb_values,
+                                'CC': cc_values, 'RMSE': rmse_values, 'NSE': nse_values, 'KGE': kge_values})
 
-    return obj_values
+    if return_params:
+        params_values = jobs2xlsx(jobsyaml_path)
+        params_and_obj_values = pd.concat([params_values, obj_values], axis=1)
+        return_fun = params_and_obj_values.copy()
+    else:
+        return_fun = obj_values.copy()
+    
+    if save_path is not None:
+        return_fun.to_excel(save_path, index=False)
+    
+    return return_fun
 
 def MaxMinNorm(data, min_value, max_value):
     """

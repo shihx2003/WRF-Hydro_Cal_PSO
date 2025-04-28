@@ -53,13 +53,16 @@ def read_jobs_yaml(path):
 
 
 def read_jobs_frxst(dir, jobsyaml_path, **kwargs):
+
     return_obs = kwargs.get('return_obs', False)
     draw_pic = kwargs.get('draw_pic', False)
+    obsdir = kwargs.get('obsdir', '/public/home/Shihuaixuan/Data/Qobs')
+
     job_ids, jobs_yaml = read_jobs_yaml(jobsyaml_path)
     eventname = jobs_yaml.get(job_ids[0]).get('event_no')
     basin, no = eventname.split('_')[0], eventname.split('_')[1]
 
-    obs_events, obs_info = read_obs(basin, no)
+    obs_events, obs_info = read_obs(basin, no, obsdir=obsdir)
 
     jobs_frxst = {}
     for job_id in job_ids:

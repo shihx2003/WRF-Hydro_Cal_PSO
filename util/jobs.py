@@ -17,6 +17,8 @@ from util.read import read_params_info
 def jobs2yaml(paramsnames, param_values, eventname, **kwargs):
     params_path = kwargs.get('params_path', './params/run_params.yaml')
     jobname = kwargs.get('jobname', 'Run')
+    fixed_parmas = kwargs.get('fixed_parmas', None)
+
     basin, no = eventname.split('_')[0], eventname.split('_')[1]
     yaml_file = kwargs.get('yaml_file', f'{jobname}_{eventname}.yaml')
     params_info = read_params_info(params_path, paramsnames)
@@ -24,7 +26,12 @@ def jobs2yaml(paramsnames, param_values, eventname, **kwargs):
     jobs = {}
     for i in range(len(param_values)):
         value = param_values[i]
-        set_params = {}
+
+        if fixed_parmas is not None:
+            set_params = fixed_parmas.copy()
+        else:
+            set_params = {}
+
         for j, param in enumerate(params_info):
             set_params[param] = float(value[j])
         job_info = {
