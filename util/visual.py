@@ -71,12 +71,15 @@ def Draw_sobol_S2(problem, Si, filename='sobol_S2', figsize=(12, 10), conf=False
     plt.savefig(f'./pic/{filename}.png', dpi=300)
     plt.close()
 
-def Draw_morris_mu(problem, Si, filename='morris_mu', figsize=(12, 8)):
-    mu = Si['mu']
+def Draw_morris_mu(problem, Si, filename='morris_mu', figsize=(12, 8), **kwargs):
+    abs_mu = kwargs.get('abs_mu', False)
+    if abs_mu:
+        mu = abs(Si['mu'])
+    else:
+        mu = Si['mu_star']
+        
     params = problem['names']
-    
     mu_df = pd.DataFrame(mu, index=params, columns=["mu"])
-
     plt.figure(figsize=figsize)
     sns.barplot(y=mu_df.index, x=mu_df["mu"], hue=mu_df.index, palette="viridis", legend=False)
     plt.title('Morris Sensitivity Analysis - mu (Mean Effect)', fontsize=14)
