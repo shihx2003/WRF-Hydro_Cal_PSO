@@ -106,11 +106,11 @@ def CalObjFun(dir, jobsyaml_path, save_path=None, **kwargs):
         A DataFrame containing the objective function values for each job ID. If return_params is True, it will also include the parameters.
     """
 
-    draw_pic = kwargs.get('draw_pic', False)
+    # draw_pic = kwargs.get('draw_pic', False)
     obsdir = kwargs.get('obsdir', '/public/home/Shihuaixuan/Data/Qobs')
     return_params = kwargs.get('return_params', False)
 
-    jobs_frxst, obs, obs_info = read_jobs_frxst(dir, jobsyaml_path, obsdir=obsdir, return_obs=True, draw_pic=draw_pic)
+    jobs_frxst, obs, obs_info = read_jobs_frxst(dir, jobsyaml_path, return_obs=True, **kwargs)
     job_ids = list(jobs_frxst.keys())
 
     bias_values = []

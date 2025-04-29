@@ -120,6 +120,7 @@ def check_and_collect(running_id:list, set_jobs:dict):
 
             elif set_jobs[job_id].job_status == "E":
                 logger.error(f"Job {set_jobs[job_id].job_id} encountered an error.")
+                set_jobs[job_id].collect_frxst(set_jobs[job_id].result_dir)         # collect error files as model output
                 set_jobs[job_id].collect_frxst(set_jobs[job_id].result_dir, '_error')
                 set_jobs[job_id].save_config()
                 to_remove.append(job_id)

@@ -15,6 +15,29 @@ import pandas as pd
 from util.read import read_params_info
 
 def jobs2yaml(paramsnames, param_values, eventname, **kwargs):
+    """
+    Generate a YAML file containing job information based on parameter values.
+    'job_id' =  f'{jobname}_{i+1}'
+    Parameters
+    ----------
+    paramsnames : list
+        List of parameter names.
+    param_values : np.ndarray
+        Array of parameter values for each job.
+    eventname : str
+        Event name for the job.
+    kwargs : dict, optional
+        Additional keyword arguments.
+        - params_path (str): Path to the YAML file containing parameter information, default is './params/run_params.yaml'.
+        - jobname (str): Name of the job, default is 'Run'.
+        - fixed_parmas (dict): Fixed parameters for the job, default is None.
+        - yaml_file (str): Name of the output YAML file, default is '{jobname}_{eventname}.yaml'.
+    
+    Returns
+    ----------
+    jobs : dict
+        Dictionary containing job information.
+    """
     params_path = kwargs.get('params_path', './params/run_params.yaml')
     jobname = kwargs.get('jobname', 'Run')
     fixed_parmas = kwargs.get('fixed_parmas', None)

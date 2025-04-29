@@ -12,6 +12,7 @@ import os
 import yaml
 import pandas as pd
 import util.wrfhydrofrxst as whf
+from util.correct import correct_sim
 
 def read_obs(basin, events, obsdir='/public/home/Shihuaixuan/Data/Qobs'):
     info = pd.read_excel(f"{obsdir}/Haihe_Floods_Interp_1H/{basin}_FloodEvents/{basin}_Flood_Info.xlsx", sheet_name='Sheet1')
@@ -57,6 +58,7 @@ def read_jobs_frxst(dir, jobsyaml_path, **kwargs):
     return_obs = kwargs.get('return_obs', False)
     draw_pic = kwargs.get('draw_pic', False)
     obsdir = kwargs.get('obsdir', '/public/home/Shihuaixuan/Data/Qobs')
+    correct = kwargs.get('correct', False)
 
     job_ids, jobs_yaml = read_jobs_yaml(jobsyaml_path)
     eventname = jobs_yaml.get(job_ids[0]).get('event_no')
@@ -69,7 +71,11 @@ def read_jobs_frxst(dir, jobsyaml_path, **kwargs):
         
         frxst_name = f'{job_id}_{basin}_{no}'
         sim = whf.Readfrxst_pts_out(os.path.join(dir, f'{frxst_name}.txt'), station = {'1': basin})
-        sim = whf.ConvertTimeZone(sim, 'UTC', 'Asia/Shanghai')
+        if correct:
+            sim = correct_sim(sim, f'{basin}_{no}')
+        else:
+            sim = whf.ConvertTimeZone(sim, 'UTC', 'Asia/Shanghai')
+        # sim = whf.ConvertTimeZone(sim, 'Asia/Shanghai', 'UTC')
         sim = sim[(sim['Date'] >= obs_info[no][0]) & (sim['Date'] <= obs_info[no][1])]
 
         sim = sim.rename(columns={f'{basin}_{frxst_name}': job_id})
