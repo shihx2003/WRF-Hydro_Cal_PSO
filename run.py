@@ -27,19 +27,18 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 sim_info = {
-    'obj': 'Sen_Fuping',
-    'ROOT_DIR': '/public/home/Shihuaixuan/Run/Haihe_Run/senNewcentral_Fuping',
+    'obj': 'sobol_n_Fuping',
+    'ROOT_DIR': '/public/home/Shihuaixuan/Run/Haihe_Run/sobol_n_Fuping',
 }
 global_info = SimulationInfo(sim_info)
 global_info.creat_work_dirs()
 
-cal_events = ['test', 
-              'Fuping_20110815', 'Fuping_20110824', 'Fuping_20120621', 'Fuping_20120721', 
-              'Fuping_20130628', 'Fuping_20130811', 'Fuping_20160718', 'Fuping_20170720', 
-              'Fuping_20171007']
-for event in cal_events:
-    yaml_path = os.path.join(sim_info['ROOT_DIR'], 'jobs', f'senNewcentral_{event}.yaml')
-    with open(yaml_path, 'r') as f:
-        loaded_jobs = yaml.load(f, Loader=yaml.FullLoader)
-    set_jobs = batch_instantiate(global_info, jobs=loaded_jobs, configs=None)
-    schedule_and_track_jobs(set_jobs, max_num=5)
+cal_events = ['Fuping_20120621', 'Fuping_20130628']
+for n in [2, 4, 8, 16]:
+    for event in cal_events:
+        yaml_path = os.path.join(sim_info['ROOT_DIR'], 'jobs', f'sobol_{n}_{event}.yaml')
+        with open(yaml_path, 'r') as f:
+            loaded_jobs = yaml.load(f, Loader=yaml.FullLoader)
+        set_jobs = batch_instantiate(global_info, jobs=loaded_jobs, configs=None)
+        schedule_and_track_jobs(set_jobs, max_num=5)
+
