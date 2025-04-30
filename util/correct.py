@@ -14,8 +14,10 @@ from util.wrfhydrofrxst import ConvertTimeZone
 def correct_sim(sim, eventname):
     sim = sim.copy()
     if eventname == 'Fuping_20120621':
-        # Convert time from Asia/Shanghai to UTC by subtracting 8 hours
         sim['Date'] = sim['Date'] - pd.Timedelta(hours=16)
+        # sim = ConvertTimeZone(sim, 'Asia/Shanghai', 'UTC')
+    elif eventname == 'Fuping_20120721':
+        sim['Date'] = sim['Date'] - pd.Timedelta(hours=8)
         # sim = ConvertTimeZone(sim, 'Asia/Shanghai', 'UTC')
     else:
         raise ValueError(f"Event name '{eventname}' is not recognized for time zone conversion.")
