@@ -127,6 +127,9 @@ def check_and_collect(running_id:list, set_jobs:dict):
 
             elif set_jobs[job_id].job_status == "R":
                 logger.info(f"Job {set_jobs[job_id].job_id} is still running.")
+            elif set_jobs[job_id].job_status == "Q":
+                logger.info(f"Job {set_jobs[job_id].job_id} is queued.")
+                
             else:
                 logger.info(f"Job {set_jobs[job_id].job_id} is in an unknown state.")
 
