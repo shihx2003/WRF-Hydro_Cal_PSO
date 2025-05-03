@@ -41,6 +41,7 @@ def jobs2yaml(paramsnames, param_values, eventname, **kwargs):
     params_path = kwargs.get('params_path', './params/run_params.yaml')
     jobname = kwargs.get('jobname', 'Run')
     fixed_parmas = kwargs.get('fixed_parmas', None)
+    periods = kwargs.get('periods', None)
 
     basin, no = eventname.split('_')[0], eventname.split('_')[1]
     yaml_file = kwargs.get('yaml_file', f'{jobname}_{eventname}.yaml')
@@ -49,7 +50,11 @@ def jobs2yaml(paramsnames, param_values, eventname, **kwargs):
     jobs = {}
     for i in range(len(param_values)):
         value = param_values[i]
-
+        if periods is not None:
+            period = periods[i]
+        else:
+            period = 'Not_Supported'
+        
         if fixed_parmas is not None:
             set_params = fixed_parmas.copy()
         else:
@@ -59,7 +64,7 @@ def jobs2yaml(paramsnames, param_values, eventname, **kwargs):
             set_params[param] = float(value[j])
         job_info = {
                 'job_id': f'{jobname}_{i+1}',
-                'period': 'Not_Supported',
+                'period': period,
                 'event_no': f'{eventname}',
                 'basin' : f'{basin}',
                 'set_params': set_params

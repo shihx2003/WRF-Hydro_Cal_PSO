@@ -15,10 +15,13 @@ def correct_sim(sim, eventname):
     sim = sim.copy()
     if eventname == 'Fuping_20120621':
         sim['Date'] = sim['Date'] - pd.Timedelta(hours=16)
-        # sim = ConvertTimeZone(sim, 'Asia/Shanghai', 'UTC')
+
     elif eventname == 'Fuping_20120721':
         sim['Date'] = sim['Date'] - pd.Timedelta(hours=8)
-        # sim = ConvertTimeZone(sim, 'Asia/Shanghai', 'UTC')
+
+    elif eventname == 'Fuping_20130811':
+        sim['Date'] = sim['Date'] + pd.Timedelta(hours=19)
+
     else:
         raise ValueError(f"Event name '{eventname}' is not recognized for time zone conversion.")
     
