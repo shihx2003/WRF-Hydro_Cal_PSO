@@ -32,7 +32,6 @@ for i in range(len(events)):
     event = events[i]
     njob = njobs[i]
     jobrun = f'PSO_c_{event}'
-    params = ['BEXP', 'SMCMAX', 'SLOPE', 'DKSAT', 'REFKDT']
     obsdir = 'F:/水文年鉴/'
     result_dir = f'./work/PSO/{jobrun}/result'
     save = f'./work/PSO/{jobrun}/Finial/'

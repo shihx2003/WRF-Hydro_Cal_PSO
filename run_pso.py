@@ -39,14 +39,14 @@ logger = logging.getLogger(__name__)
 #     }
 											
 central_point = {
-        'BEXP': 1.857353169,
-        'SMCMAX': 0.848071996,
-        'SLOPE': 0.36779211,
-        'DKSAT': 5.765174227,
-        'REFKDT': 1.56732966,
-        'ChSSlp': 3.244338311,
-        'MannN': 0.9518489,
-        'OVROUGHRTFAC': 0.219936395, 
+        'BEXP': 1.825094408,
+        'SMCMAX': 0.849502852,
+        'SLOPE': 0.340010164,
+        'DKSAT': 4.057032245,
+        'REFKDT': 1.442107557,
+        'ChSSlp': 5.453478354,
+        'MannN': 2.985842239,
+        'OVROUGHRTFAC': 0.5, 
     }
 
 fix_params = {
@@ -58,30 +58,35 @@ fix_params = {
 params = ['BEXP', 'SMCMAX', 'SLOPE', 'DKSAT', 'REFKDT', 'ChSSlp', 'MannN', 'OVROUGHRTFAC']
 
 obsdir = '/public/home/Shihuaixuan/Data/Qobs'
+event = 'Fuping_20200801'
 iters_count = 0
 n_particles = 20
 n_iterations = 50
-inin_pramas = central_sample(params, central_point, n_particles, 0.1, return_problem=False)
+inin_pramas = central_sample(params, central_point, n_particles, 0.40, return_problem=False)
 problem = creat_problem(params)
 central_bounds = [[bouns[0] for bouns in problem['bounds']],[bouns[1] for bouns in problem['bounds']]]
 
 sim_info = {
     'obj': 'Sen_Fuping',
-    'ROOT_DIR': '/public/home/Shihuaixuan/Run/Haihe_Run/PSO_Run',
+    'ROOT_DIR': '/public/home/Shihuaixuan/Run/Haihe_Run/PSO_Run_c_Fuping_20200801',
 }
 global_info = SimulationInfo(sim_info)
 global_info.creat_work_dirs()
 
+jobs_dir = os.path.join(sim_info['ROOT_DIR'], 'jobs')
+if not os.path.exists(jobs_dir):
+    os.makedirs(jobs_dir)
+
 def run_model(x):
     global iters_count
     iters_count += 1
-    # jobs = jobs2yaml(params, x, eventname='Fuping_20120621', jobname=f'PSO_{iters_count}', fixed_parmas=fix_params)
-    jobs = jobs2yaml(params, x, eventname='Fuping_20120621', jobname=f'PSO_{iters_count}')
+    # jobs = jobs2yaml(params, x, eventname=f'{event}', jobname=f'PSO_{iters_count}', fixed_parmas=fix_params)
+    jobs = jobs2yaml(params, x, eventname=f'{event}', jobname=f'PSO_{iters_count}')
     set_jobs = batch_instantiate(global_info, jobs=jobs, configs=None)
-    schedule_and_track_jobs(set_jobs, max_num=5)
-    jobymal = os.path.join(sim_info['ROOT_DIR'], 'jobs', f'PSO_{iters_count}_Fuping_20120621.yaml')
+    schedule_and_track_jobs(set_jobs, max_num=7)
+    jobymal = os.path.join(sim_info['ROOT_DIR'], 'jobs', f'PSO_{iters_count}_{event}.yaml')
     resultdir = os.path.join(sim_info['ROOT_DIR'], 'result')
-    obj_values = CalObjFun(resultdir, jobymal, obsdir=obsdir)  #df
+    obj_values = CalObjFun(resultdir, jobymal, obsdir=obsdir, correct=False)  #df
 
     Bias = obj_values['Bias'].values
     PBias = obj_values['PBias'].values

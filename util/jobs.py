@@ -18,6 +18,7 @@ def jobs2yaml(paramsnames, param_values, eventname, **kwargs):
     """
     Generate a YAML file containing job information based on parameter values.
     'job_id' =  f'{jobname}_{i+1}'
+    
     Parameters
     ----------
     paramsnames : list
@@ -79,13 +80,38 @@ def jobs2yaml(paramsnames, param_values, eventname, **kwargs):
 
 
 def jobs2xlsx(yaml_path, xlsx_path=None, **kwargs):
+    """
+    Convert a YAML file containing job information into an Excel file.
+
+    Parameters
+    ----------
+    yaml_path : str
+        Path to the YAML file containing job information.
+    xlsx_path : str, optional
+        Path to save the Excel file. If None, the Excel file will not be saved.
+    kwargs : dict, optional
+    
+
+    Returns
+    ----------
+    
+
+    """
+    return_info = kwargs.get('return_info', False)
     with open(yaml_path, 'r', encoding='utf-8') as f:
         loaded_jobs = yaml.load(f, Loader=yaml.FullLoader)
 
     rows = []
     for sen_id, sen_data in loaded_jobs.items():
         set_params = sen_data['set_params']
-        row = {'job_id': sen_id}
+        if return_info:
+            row =  {'job_id': sen_id,
+                    'event_no': sen_data['event_no'],
+                    'basin': sen_data['basin'],
+                    'period': sen_data['period'],
+                    }
+        else:
+            row = {'job_id': sen_id}
         row.update(set_params)
         rows.append(row)
     params_values = pd.DataFrame(rows)
@@ -93,3 +119,4 @@ def jobs2xlsx(yaml_path, xlsx_path=None, **kwargs):
         params_values.to_excel(xlsx_path, index=False)
 
     return params_values
+

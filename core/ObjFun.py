@@ -141,7 +141,7 @@ def CalObjFun(dir, jobsyaml_path, save_path=None, **kwargs):
                                 'CC': cc_values, 'RMSE': rmse_values, 'NSE': nse_values, 'KGE': kge_values})
 
     if return_params:
-        params_values = jobs2xlsx(jobsyaml_path)
+        params_values = jobs2xlsx(jobsyaml_path, return_info=True)
         params_and_obj_values = pd.concat([params_values, obj_values], axis=1)
         return_fun = params_and_obj_values.copy()
     else:
