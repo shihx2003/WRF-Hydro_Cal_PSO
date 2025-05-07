@@ -12,4 +12,6 @@ Zhongtangmei_events_no = ['20080809', '20110724', '20110825', '20120721', '20160
 params = ['BEXP', 'ChSSlp', 'DKSAT',  'MannN', 'OVROUGHRTFAC', 'REFKDT', 'RETDEPRTFAC', 'SLOPE', 'SMCMAX', 'LKSATFAC','NEXP','RSURFEXP']
 objfun_name = ['Bias', 'PBias', 'RMSE', 'CC', 'NSE', 'KGE']
 ```
-
+```python
+params = ['BEXP', 'ChSSlp', 'DKSAT',  'MannN', 'OVROUGHRTFAC', 'REFKDT', 'RETDEPRTFAC', 'SLOPE',     'SMCMAX', 'LKSATFAC','NEXP','RSURFEXP']
+```
