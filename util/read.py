@@ -14,8 +14,32 @@ import pandas as pd
 import util.wrfhydrofrxst as whf
 from util.correct import correct_sim
 
-def read_obs(basin, events, obsdir='/public/home/Shihuaixuan/Data/Qobs'):
-    info = pd.read_excel(f"{obsdir}/Haihe_Floods_Interp_1H/{basin}_FloodEvents/{basin}_Flood_Info.xlsx", sheet_name='Sheet1')
+def read_obs(basin, events, obsdir='/public/home/Shihuaixuan/Data/Qobs',**kwargs):
+    """
+    Read observation data from Excel files.
+
+    Parameters
+    -----------
+    basin : str
+        The name of the basin (e.g., 'Fuping').
+    events : str or list of str
+        The event number(s) to read (e.g., '20190804' or ['20190804', '20190805']).
+    obsdir : str, optional
+        The directory where the observation files are located. Default is '/public/home/Shihuaixuan/Data/Qobs'.
+    **kwargs : keyword arguments
+        Additional arguments to pass to the function.
+        - sheetname : str, optional
+            The name of the sheet in the Excel file to read. Default is 'Sheet1'.
+    
+    Returns
+    --------
+    obs_events : dict
+        A dictionary containing the observation data for each event.
+    obs_info : dict
+        A dictionary containing the start and end times for each event.
+    """
+    sheetname = kwargs.get('sheetname', 'Sheet1')
+    info = pd.read_excel(f"{obsdir}/Haihe_Floods_Interp_1H/{basin}_FloodEvents/{basin}_Flood_Info.xlsx", sheet_name=sheetname)
     obs_events = {}
     obs_info = {}
     if not isinstance(events, list):
