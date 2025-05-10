@@ -19,9 +19,16 @@ pic_dir = './pic/'
 if not os.path.exists(pic_dir):
     os.makedirs(pic_dir)
 
-def Draw_sobol_S1_ST(problem, Si, filename='sobol_S1_ST', figsize=(18, 6), conf=False):
+def Draw_sobol_S1_ST(problem, Si, filename='sobol_S1_ST', figsize=(18, 6), conf=False, **kwargs):
+
+    
     param_names = problem['names']
-    S1, S1_conf, ST, ST_conf = Si['S1'], Si['S1_conf'], Si['ST'], Si['ST_conf']
+    abs_si = kwargs.get('abs_si', False)
+    if abs_si:
+        S1, S1_conf, ST, ST_conf = np.abs(Si['S1']), np.abs(Si['S1_conf']), np.abs(Si['ST']), np.abs(Si['ST_conf'])
+    else:
+        S1, S1_conf, ST, ST_conf = Si['S1'], Si['S1_conf'], Si['ST'], Si['ST_conf']
+    
     fig, axes = plt.subplots(1, 2, figsize=figsize)
     if conf:
         axes[0].barh(param_names, S1, xerr=S1_conf, 
@@ -45,10 +52,15 @@ def Draw_sobol_S1_ST(problem, Si, filename='sobol_S1_ST', figsize=(18, 6), conf=
     plt.savefig(f'./pic/{filename}.png', dpi=300)
     plt.close()
 
-def Draw_sobol_S2(problem, Si, filename='sobol_S2', figsize=(12, 10), conf=False):
+def Draw_sobol_S2(problem, Si, filename='sobol_S2', figsize=(12, 10), conf=False, **kwargs):
     params = problem['names']
-    S2_matrix = Si['S2']
-    S2_conf_matrix = Si['S2_conf']
+    abs_si = kwargs.get('abs_si', False)
+    if abs_si:
+        S2_matrix = np.abs(Si['S2'])
+        S2_conf_matrix = np.abs(Si['S2_conf'])
+    else:
+        S2_matrix = Si['S2']
+        S2_conf_matrix = Si['S2_conf']
     S2_matrix = np.nan_to_num(S2_matrix, nan=np.nan)
     S2_conf_matrix = np.nan_to_num(S2_conf_matrix, nan=np.nan)
     S2_df = pd.DataFrame(S2_matrix, columns=params, index=params)
@@ -72,6 +84,23 @@ def Draw_sobol_S2(problem, Si, filename='sobol_S2', figsize=(12, 10), conf=False
     plt.close()
 
 def Draw_morris_mu(problem, Si, filename='morris_mu', figsize=(12, 8), **kwargs):
+    """
+    Draws the Morris sensitivity analysis results for mu (mean effect) and mu_star (normalized mean effect).
+
+    Parameters
+    ----------
+    problem : dict
+        The problem definition containing parameter names.
+    Si : dict
+        The sensitivity analysis results from the Morris method.
+    filename : str, optional
+        The filename for saving the plot (default is 'morris_mu').
+    figsize : tuple, optional
+        The size of the figure (default is (12, 8)).
+    **kwargs : keyword arguments
+        Additional arguments for customization. The 'abs_mu' argument can be used to plot the absolute value of mu.
+        - kwargs['abs_mu'] : bool, optional
+    """
     abs_mu = kwargs.get('abs_mu', False)
     if abs_mu:
         mu = abs(Si['mu'])

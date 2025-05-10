@@ -15,9 +15,9 @@ from util.sample import central_problem, central_sample
 from util.jobs import jobs2yaml
 from core.ObjFun import CalObjFun
 jobrun = 'test'
-job_yaml_path = f'./work//PSO/{jobrun}/jobs/senNewcentral_Fuping_20130811.yaml'
-result_dir = './work/PSO/test/result'
+job_yaml_path = r"F:\Haihe\Run\params_sen\work\Sen\jobs\sen_jobs_Fuping_20190804.yaml"
+result_dir = './work/Sen/result'
 obsdir = 'F:/水文年鉴/'
-save = f'./work/PSO/{jobrun}/Finial/'
-param_obj_values = CalObjFun(result_dir, job_yaml_path, save_path=save+f'PSO_test.xlsx',
-                                        obsdir=obsdir, draw_pic=True, return_params=True, correct=True)
+save = f'./work/Sen/Finial/'
+param_obj_values = CalObjFun(result_dir, job_yaml_path, save_path=save+f'Fuping_20190804_16Sen.xlsx',
+                                        obsdir=obsdir, draw_pic=False, return_params=True, correct=False)
