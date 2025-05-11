@@ -58,12 +58,12 @@ class WRFHydroPrecipForcing:
             precip_forcing.to_netcdf(os.path.join(save_path, f'{str}00.PRECIP_FORCING.nc'))
 
     def regrid(self, forcing, save_path=None):
-        if save_path==None:
-            save_path = os.path.join(os.getcwd(), "output")
-        if not os.path.exists(save_path):
-            os.makedirs(save_path)
+
         forcing_regrid = self.precip_regrid(forcing)
-        self.save_PRECIP_FORCING(forcing_regrid, save_path)
+        if save_path:
+            if not os.path.exists(save_path):
+                os.makedirs(save_path)
+            self.save_PRECIP_FORCING(forcing_regrid, save_path)
         return forcing_regrid
 
 class PrecipDataLoader:

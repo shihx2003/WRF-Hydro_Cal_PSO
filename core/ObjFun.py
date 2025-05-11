@@ -78,6 +78,45 @@ def KGE(obs, sim):
         kge_values[colums] = kge_value
     return kge_values
 
+def MRE(obs, sim):
+    obs = obs.reset_index(drop=True)
+    sim = sim.reset_index(drop=True)
+    mre_values = {}
+    for colums in sim.columns[1:]:
+        mre_value = ((np.max(sim[colums].values) - np.max(obs['obs'].values)) / np.max(obs['obs'].values)) * 100
+        mre_values[colums] = mre_value
+    return mre_values
+
+def Tlag(obs, sim):
+    obs = obs.reset_index(drop=True)
+    sim = sim.reset_index(drop=True)
+    tlag_values = {}
+    for colums in sim.columns[1:]:
+
+        sim_max_idx = np.argmax(sim[colums].values)
+        obs_max_idx = np.argmax(obs['obs'].values)
+
+        tlag_value = sim_max_idx - obs_max_idx
+
+        tlag_values[colums] = tlag_value
+
+    return tlag_values
+
+def FastCalObj(obs, sim, eventno):
+
+    bias = Bias(obs, sim)[eventno]
+    pbias = PBias(obs, sim)[eventno]
+    rmse = RMSE(obs, sim)[eventno]
+    cc = CC(obs, sim)[eventno]
+    nse = NSE(obs, sim)[eventno]
+    kge = KGE(obs, sim)[eventno]
+    mre = MRE(obs, sim)[eventno]
+    tlag = Tlag(obs, sim)[eventno]
+    obj_values = {'eventno': eventno, 'Bias': bias, 'PBias': pbias, 'RMSE': rmse,
+                    'CC': cc, 'NSE': nse, 'KGE': kge, 'MRE': mre, 'Tlag': tlag}
+    return obj_values
+
+
 
 def CalObjFun(dir, jobsyaml_path, save_path=None, **kwargs):
     """

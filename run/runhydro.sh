@@ -4,6 +4,6 @@ cp -r /public/home/Shihuaixuan/Run/Haihe_bak/Haihe_run_source ./run_source
 source ~/anaconda3/etc/profile.d/conda.sh
 conda activate sen
 echo "The environment is activated and script is running."
-nohup python3 run_pso_best.py > ./run_pso_best.log 2>&1 &
+nohup python3 run_Flood_Ana.py > ./run_Flood_Ana.log 2>&1 &
 echo "Python script is running in the background. Check the log file for output."
-ps aux | grep run_pso_best.py
+ps aux | grep run_Flood_Ana.py
