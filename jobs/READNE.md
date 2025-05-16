@@ -1,1 +1,0 @@
-当前[sen_jobs_Fuping_20190804.yaml](sen_jobs_Fuping_20190804.yaml)，[sen_jobs_Fuping_20200824.yaml](sen_jobs_Fuping_20200824.yaml)，[sen_jobs_Zhongtangmei_20190804.yaml](sen_jobs_Zhongtangmei_20190804.yaml)，随机数生成有问题，暂时保存[text](params_value.npy)
