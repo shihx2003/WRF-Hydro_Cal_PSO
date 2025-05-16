@@ -46,6 +46,12 @@ Ensure the following dependencies are installed:
 - `numpy`
 - `pandas`
 - `xarray`
+- `logging`
+- `seaborn`
+- `pandas`
+- `xesmf`                # creat precip forcing files
+- `joblib`
+- `yaml`
 - Custom modules: `core`, `util`
 
 ### 2. Run the Calibration
