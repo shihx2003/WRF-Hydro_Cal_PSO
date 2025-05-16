@@ -103,3 +103,6 @@ Email: <shihx2003@outlook.com>
 
 - This project relies on the PBS job scheduler and a complete configuration of the WRF-Hydro model.
 - Recommended to run on HPC or server environment for performance.
+
+## Documentation Acknowledgement
+Parts of this README documentation were generated with the help of ChatGPT.
