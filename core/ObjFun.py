@@ -9,6 +9,7 @@
 
 # here put the import lib
 import os
+import re
 import sys
 import numpy as np
 import pandas as pd
@@ -77,12 +78,81 @@ def KGE(obs, sim):
         kge_values[colums] = kge_value
     return kge_values
 
+def MRE(obs, sim):
+    obs = obs.reset_index(drop=True)
+    sim = sim.reset_index(drop=True)
+    mre_values = {}
+    for colums in sim.columns[1:]:
+        mre_value = ((np.max(sim[colums].values) - np.max(obs['obs'].values)) / np.max(obs['obs'].values)) * 100
+        mre_values[colums] = mre_value
+    return mre_values
 
-def CalObjFun(dir, jobsyaml_path, file_path=None, **kwargs):
-    draw_pic = kwargs.get('draw_pic', False)
-    jobs_frxst, obs, obs_info = read_jobs_frxst(dir, jobsyaml_path, return_obs=True, draw_pic=draw_pic)
+def Tlag(obs, sim):
+    obs = obs.reset_index(drop=True)
+    sim = sim.reset_index(drop=True)
+    tlag_values = {}
+    for colums in sim.columns[1:]:
+
+        sim_max_idx = np.argmax(sim[colums].values)
+        obs_max_idx = np.argmax(obs['obs'].values)
+
+        tlag_value = sim_max_idx - obs_max_idx
+
+        tlag_values[colums] = tlag_value
+
+    return tlag_values
+
+def FastCalObj(obs, sim, eventno):
+
+    bias = Bias(obs, sim)[eventno]
+    pbias = PBias(obs, sim)[eventno]
+    rmse = RMSE(obs, sim)[eventno]
+    cc = CC(obs, sim)[eventno]
+    nse = NSE(obs, sim)[eventno]
+    kge = KGE(obs, sim)[eventno]
+    mre = MRE(obs, sim)[eventno]
+    tlag = Tlag(obs, sim)[eventno]
+    obj_values = {'eventno': eventno, 'Bias': bias, 'PBias': pbias, 'RMSE': rmse,
+                    'CC': cc, 'NSE': nse, 'KGE': kge, 'MRE': mre, 'Tlag': tlag}
+    return obj_values
+
+
+
+def CalObjFun(dir, jobsyaml_path, save_path=None, **kwargs):
+    """
+    Calculate the objective function values for the given simulation results.
+
+    Parameters
+    ----------
+    dir : str
+        The directory where the simulation results are stored.
+    jobsyaml_path : str
+        The path to the YAML file containing job information.
+    save_path : str, optional
+        The path to save the results. If None, the results will not be saved.
+    **kwargs : keyword arguments
+        Additional parameters for the function:
+        - draw_pic : bool, optional
+            If True, draw pictures of the simulation results. Default is False.
+        - obsdir : str, optional
+            The directory where the observed data is stored. Default is '/public/home/Shihuaixuan/Data/Qobs'.
+        - return_params : bool, optional
+            If True, return the parameters along with the objective function values. Default is False.
+
+    Returns
+    ----------
+    return_fun : pd.DataFrame
+        A DataFrame containing the objective function values for each job ID. If return_params is True, it will also include the parameters.
+    """
+
+    # draw_pic = kwargs.get('draw_pic', False)
+    obsdir = kwargs.get('obsdir', '/public/home/Shihuaixuan/Data/Qobs')
+    return_params = kwargs.get('return_params', False)
+
+    jobs_frxst, obs, obs_info = read_jobs_frxst(dir, jobsyaml_path, return_obs=True, **kwargs)
     job_ids = list(jobs_frxst.keys())
 
+    bias_values = []
     pb_values = []
     cc_values = []
     rmse_values = []
@@ -92,23 +162,34 @@ def CalObjFun(dir, jobsyaml_path, file_path=None, **kwargs):
     for job_id in job_ids:
         sim = jobs_frxst[job_id]
 
+        bias = Bias(obs, sim)[f'{job_id}']
         pb = PBias(obs, sim)[f'{job_id}']
         cc = CC(obs, sim)[f'{job_id}']
         rmse = RMSE(obs, sim)[f'{job_id}']
         nse = NSE(obs, sim)[f'{job_id}']
         kge = KGE(obs, sim)[f'{job_id}']
         
+        bias_values.append(bias)
         pb_values.append(pb)
         cc_values.append(cc)
         rmse_values.append(rmse)
         nse_values.append(nse)
         kge_values.append(kge)
 
-    obj_values = pd.DataFrame({'job_id': job_ids,  'PBias': pb_values, 'CC': cc_values, 'RMSE': rmse_values, 'NSE': nse_values, 'KGE': kge_values})
-    if file_path is not None:
-        obj_values.to_excel(file_path, index=False)
+    obj_values = pd.DataFrame({'job_id': job_ids, 'Bias': bias_values,  'PBias': pb_values,
+                                'CC': cc_values, 'RMSE': rmse_values, 'NSE': nse_values, 'KGE': kge_values})
 
-    return obj_values
+    if return_params:
+        params_values = jobs2xlsx(jobsyaml_path, return_info=True)
+        params_and_obj_values = pd.concat([params_values, obj_values], axis=1)
+        return_fun = params_and_obj_values.copy()
+    else:
+        return_fun = obj_values.copy()
+    
+    if save_path is not None:
+        return_fun.to_excel(save_path, index=False)
+    
+    return return_fun
 
 def MaxMinNorm(data, min_value, max_value):
     """
