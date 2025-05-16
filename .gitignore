@@ -17,7 +17,7 @@ jobs/*
 test.py
 /delete
 /work
-
+/temp/*
 # model files
 *.pkl
 # Byte-compiled / optimized / DLL files
